@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniTrade AI - Sovereign-Grade Automated Trading System</title>
+    <meta name="description" content="AI-powered automated trading platform for stocks and crypto. Multi-broker support, advanced risk management, and real-time execution.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            margin-left: 1rem;
+        }
+        
+        /* Warning Banner */
+        .warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .warning h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background: #f8f9fa;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: 5rem 0;
+        }
+        
+        .pricing h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pricing-card.featured {
+            border-color: #667eea;
+            position: relative;
+            transform: scale(1.05);
+        }
+        
+        .pricing-card.featured::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 1rem 0;
+        }
+        
+        .price span {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .pricing-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .pricing-card li::before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 0;
+            background: #f8f9fa;
+        }
+        
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-links {
+            margin: 1rem 0;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+        
+        .disclaimer {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">🚀 OmniTrade AI</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="https://github.com/BodhiNath/OmniTrade-AI">GitHub</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Sovereign-Grade AI Trading System</h1>
+            <p>Automate your trading with advanced AI strategies, multi-broker support, and comprehensive risk management</p>
+            <a href="#pricing" class="cta-button">Start Free Trial</a>
+            <a href="#features" class="cta-button cta-secondary">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Warning Banner -->
+    <div class="container">
+        <div class="warning">
+            <h3>⚠️ Important Notice</h3>
+            <p>OmniTrade AI is a real trading system that executes actual trades with real money. Trading involves substantial risk of loss. Past performance is not indicative of future results. We recommend starting with paper trading accounts and testing extensively before using real capital.</p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Powerful Features for Serious Traders</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎯 Multi-Broker Support</h3>
+                    <p>Trade stocks with Alpaca and cryptocurrencies with Binance from a single platform. Diversify across markets without switching systems.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤖 AI-Driven Strategies</h3>
+                    <p>Advanced technical analysis with RSI, MACD, Bollinger Bands, and Moving Averages. Machine learning optimization for maximum performance.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ Risk Management</h3>
+                    <p>Automatic position sizing, stop-loss orders, circuit breakers, and exposure limits. Protect your capital with institutional-grade risk controls.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Real-Time Execution</h3>
+                    <p>Lightning-fast order execution with real-time market data. Never miss an opportunity with automated trade placement.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 Performance Tracking</h3>
+                    <p>Comprehensive analytics with P&L tracking, win rate analysis, and performance metrics. Know exactly how your strategies are performing.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔔 Smart Notifications</h3>
+                    <p>Get instant alerts via Telegram, SMS, and email for trades, risk events, and system updates. Stay informed 24/7.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2>Choose Your Plan</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <div class="price">$99<span>/mo</span></div>
+                    <ul>
+                        <li>Single broker connection</li>
+                        <li>3 technical strategies</li>
+                        <li>Basic risk management</li>
+                        <li>Max 5 positions</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="#" class="cta-button">Start Free Trial</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <h3>Professional</h3>
+                    <div class="price">$299<span>/mo</span></div>
+                    <ul>
+                        <li>Multi-broker support</li>
+                        <li>All technical strategies</li>
+                        <li>Advanced risk management</li>
+                        <li>Max 20 positions</li>
+                        <li>Telegram notifications</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="#" class="cta-button">Start Free Trial</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Elite</h3>
+                    <div class="price">$799<span>/mo</span></div>
+                    <ul>
+                        <li>Everything in Professional</li>
+                        <li>AI strategy optimization</li>
+                        <li>Unlimited positions</li>
+                        <li>SMS + Telegram alerts</li>
+                        <li>Dedicated support</li>
+                        <li>API access</li>
+                    </ul>
+                    <a href="#" class="cta-button">Start Free Trial</a>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem;">
+                <strong>14-day free trial. No credit card required.</strong>
+            </p>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>What Traders Are Saying</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p>"OmniTrade AI transformed my trading. The automated risk management alone has saved me thousands. I can finally sleep at night knowing my positions are protected."</p>
+                    <div class="testimonial-author">- Alex M., Day Trader</div>
+                </div>
+                <div class="testimonial">
+                    <p>"The multi-broker support is a game-changer. I trade both stocks and crypto, and having everything in one system saves me hours every day."</p>
+                    <div class="testimonial-author">- Sarah K., Professional Trader</div>
+                </div>
+                <div class="testimonial">
+                    <p>"As a developer, I love the transparency of the open-source code. I can see exactly what's happening and even customize strategies for my needs."</p>
+                    <div class="testimonial-author">- James L., Algo Trader</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Automate Your Trading?</h2>
+            <p>Join hundreds of traders using OmniTrade AI to execute smarter trades</p>
+            <a href="#pricing" class="cta-button">Start Your Free Trial</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/BodhiNath/OmniTrade-AI">GitHub</a>
+                <a href="#">Documentation</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="disclaimer">
+                <strong>IMPORTANT LEGAL DISCLAIMER:</strong> OmniTrade AI is a software tool for automated trading. Trading stocks, cryptocurrencies, and other financial instruments involves substantial risk of loss. Past performance is not indicative of future results. We are not financial advisors and do not provide investment advice. Users are solely responsible for their trading decisions and outcomes. By using this software, you acknowledge that you understand these risks and accept full responsibility for any outcomes.
+            </div>
+            <p style="margin-top: 2rem;">&copy; 2025 OmniTrade AI. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
