@@ -1,0 +1,208 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.11']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache Python dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-asyncio ruff
+    
+    - name: Lint with ruff
+      run: |
+        cd backend
+        ruff check app/ --output-format=github
+      continue-on-error: true
+    
+    - name: Run tests with coverage
+      env:
+        SECRET_KEY: test-secret-key-for-ci-only
+        DATABASE_URL: postgresql://test:test@localhost:5432/test
+        ENABLE_TRADING: false
+      run: |
+        cd backend
+        pytest tests/ -v --cov=app --cov-report=xml --cov-report=term
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./backend/coverage.xml
+        flags: backend
+        name: backend-coverage
+      continue-on-error: true
+
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 10
+    
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+    
+    - name: Setup pnpm cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+    
+    - name: Install dependencies
+      run: |
+        cd frontend
+        pnpm install --frozen-lockfile
+    
+    - name: Lint
+      run: |
+        cd frontend
+        pnpm lint
+      continue-on-error: true
+    
+    - name: Build
+      run: |
+        cd frontend
+        pnpm build
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+      continue-on-error: true
+    
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-results.sarif'
+      continue-on-error: true
+    
+    - name: Check for secrets
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: ${{ github.event.repository.default_branch }}
+        head: HEAD
+      continue-on-error: true
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./docker/Dockerfile.backend
+        push: false
+        tags: omnitrade-backend:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: Test Docker Compose
+      run: |
+        docker-compose config
+        docker-compose -f docker-compose.yml build
+      env:
+        SECRET_KEY: test-key
+        DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Check commit messages
+      run: |
+        echo "Checking commit message format..."
+        # Add commit message linting if needed
+      continue-on-error: true
+    
+    - name: Check for TODOs
+      run: |
+        echo "Checking for TODO comments..."
+        grep -r "TODO\|FIXME\|HACK" backend/app/ frontend/src/ || echo "No TODOs found"
+      continue-on-error: true
+    
+    - name: Check file sizes
+      run: |
+        echo "Checking for large files..."
+        find . -type f -size +1M -not -path "./node_modules/*" -not -path "./.git/*" || echo "No large files found"
+      continue-on-error: true
+
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [test-backend, test-frontend, security-scan, docker-build]
+    if: always()
+    
+    steps:
+    - name: Check results
+      run: |
+        echo "Backend Tests: ${{ needs.test-backend.result }}"
+        echo "Frontend Tests: ${{ needs.test-frontend.result }}"
+        echo "Security Scan: ${{ needs.security-scan.result }}"
+        echo "Docker Build: ${{ needs.docker-build.result }}"
