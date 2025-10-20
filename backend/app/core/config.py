@@ -2,8 +2,9 @@
 Configuration management for OmniTrade AI
 """
 from typing import Optional, List
+import secrets
 from pydantic_settings import BaseSettings
-from pydantic import Field
+from pydantic import Field, field_validator
 
 
 class Settings(BaseSettings):
@@ -17,9 +18,23 @@ class Settings(BaseSettings):
     
     # API
     API_V1_PREFIX: str = "/api/v1"
-    SECRET_KEY: str = Field(..., description="JWT secret key")
+    SECRET_KEY: str = Field(
+        default_factory=lambda: secrets.token_urlsafe(32),
+        description="JWT secret key - MUST be set in production"
+    )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     ALGORITHM: str = "HS256"
+    
+    @field_validator('SECRET_KEY')
+    @classmethod
+    def validate_secret_key(cls, v, info):
+        """Validate SECRET_KEY is set properly in production"""
+        if info.data.get('ENVIRONMENT') == 'production' and len(v) < 32:
+            raise ValueError(
+                "SECRET_KEY must be at least 32 characters in production. "
+                "Generate one with: openssl rand -hex 32"
+            )
+        return v
     
     # Database
     DATABASE_URL: str = Field(..., description="PostgreSQL connection string")
