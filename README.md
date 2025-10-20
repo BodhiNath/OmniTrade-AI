@@ -261,6 +261,45 @@ python3.11 -m pytest tests/ -v
 
 ---
 
+## 🔍 Deployment Readiness
+
+### Pre-Deployment Validation
+
+Run the validation script before deploying:
+
+```bash
+./scripts/validate_deployment.sh
+```
+
+This checks:
+- ✓ Environment variables are properly configured
+- ✓ File permissions are secure
+- ✓ Docker is installed and running
+- ✓ Safety settings are enabled
+- ✓ API keys are set (not using defaults)
+
+### Code Quality & Security
+
+- **Code Review**: See [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) for comprehensive analysis
+- **CI/CD**: Automated testing and security scanning via GitHub Actions
+- **Security**: See [SECURITY.md](SECURITY.md) for security best practices
+- **License**: MIT License - see [LICENSE](LICENSE)
+
+### Production Checklist
+
+Before going live:
+
+- [ ] Run `./scripts/validate_deployment.sh`
+- [ ] Test with paper trading for 1+ weeks
+- [ ] Configure monitoring and alerts
+- [ ] Set up backup procedures
+- [ ] Review [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+- [ ] Document emergency procedures
+- [ ] Start with small capital
+- [ ] Have emergency stop ready
+
+---
+
 ## Monitoring
 
 ### View Logs
