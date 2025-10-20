@@ -96,13 +96,15 @@ A production-ready, automated trading platform that connects to real broker acco
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
+
+**New to OmniTrade AI?** Check out our [Quick Start Guide](QUICKSTART.md) for a 10-minute setup!
 
 ### 1. Prerequisites
 
 - Docker and Docker Compose
 - Broker accounts (Alpaca, Binance)
-- Linux server (Ubuntu 20.04+ recommended)
+- Linux server (Ubuntu 20.04+ recommended) or macOS
 
 ### 2. Installation
 
