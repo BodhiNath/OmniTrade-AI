@@ -1,5 +1,9 @@
 # Environment variables
 .env
+.env.local
+.env.production
+.env.*.local
+*.env
 
 # Python
 __pycache__/
@@ -23,22 +27,38 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.pyc
+venv/
+ENV/
+env/
 
 # Testing
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.cache
 
 # Logs
 logs/*.log
+logs/
 *.log
+*.log.*
 
-# Data
+# Data & Database
 data/*
 !data/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
 
 # Docker
 *.tar.gz
+docker-compose.override.yml
+.dockerignore
 
 # IDE
 .vscode/
@@ -46,8 +66,72 @@ data/*
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
 
 # OS
 .DS_Store
 Thumbs.db
+*.bak
+*.tmp
+*.temp
+
+# Node / Frontend
 frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+frontend/.cache/
+
+# Package manager lock files (keep only pnpm-lock.yaml)
+package-lock.json
+yarn.lock
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Security
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa*
+*.pub
+
+# Backup files
+*.backup
+*.old
+*~
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.swp
+*.swo
+
+# CI/CD
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Documentation build
+docs/_build/
+site/
+
+# Secrets (extra safety)
+secrets.yml
+secrets.yaml
+credentials.json
+config.local.yml
