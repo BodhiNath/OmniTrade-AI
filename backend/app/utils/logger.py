@@ -3,6 +3,7 @@ Comprehensive logging system for OmniTrade AI
 """
 import logging
 import sys
+import os
 from pathlib import Path
 from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 from datetime import datetime
@@ -13,9 +14,17 @@ from app.core.config import settings
 def setup_logging():
     """Configure logging for the application"""
     
-    # Create logs directory
-    log_dir = Path("/home/ubuntu/omnitrade-ai/logs")
-    log_dir.mkdir(exist_ok=True)
+    # Create logs directory - use environment variable or default to relative path
+    log_dir_path = os.getenv('LOG_DIR', '/app/logs')
+    log_dir = Path(log_dir_path)
+    
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        # Fallback to current directory if log directory creation fails
+        log_dir = Path('./logs')
+        log_dir.mkdir(parents=True, exist_ok=True)
+        logging.warning(f"Could not create log directory at {log_dir_path}, using ./logs instead: {e}")
     
     # Root logger configuration
     root_logger = logging.getLogger()
