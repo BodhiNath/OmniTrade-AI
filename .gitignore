@@ -135,3 +135,7 @@ secrets.yml
 secrets.yaml
 credentials.json
 config.local.yml
+-e 
+# Environment files
+*.env
+*.env.*
